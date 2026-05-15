@@ -3,6 +3,8 @@ import feedparser
 from app.models.topic import Topic
 from app.core.logger import logger
 
+from app.utils.helper import clean_html
+
 
 RSS_FEEDS = [
     "https://hnrss.org/frontpage",
@@ -21,7 +23,7 @@ async def fetch_topics() -> list[Topic]:
         for entry in feed.entries[:5]:
             topic = Topic(
                 title=entry.get("title", ""),
-                summary=entry.get("summary", ""),
+                summary=clean_html(entry.get("summary", "")),
                 source=feed.feed.get("title", "Unknown"),
                 url=entry.get("link", ""),
                 timestamp=entry.get("published", "")
