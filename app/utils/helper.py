@@ -1,7 +1,7 @@
 import re
 
 from bs4 import BeautifulSoup
-
+import json
 
 def clean_html(raw_html: str) -> str:
 
@@ -22,3 +22,8 @@ def clean_html(raw_html: str) -> str:
     cleaned_text = " ".join(text.split())
 
     return cleaned_text.strip()
+
+def load_interests(path: str = "config/interests.json") -> list[str]:
+
+    with open(path, "r") as file:
+        return json.load(file)

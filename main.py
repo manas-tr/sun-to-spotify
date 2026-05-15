@@ -5,6 +5,11 @@ from app.services.fetcher import fetch_topics
 
 from app.services.prompt_builder import build_prompt
 
+from app.utils.helper import load_interests
+from app.ml.ranker import (
+    deduplicate_topics,
+    rank_interest
+)
 
 app = FastAPI(
     title="SUN-flower",
@@ -38,16 +43,19 @@ async def generate_prompt():
 
     deduplicated_topics = deduplicate_topics(topics)
 
-    if not deduplicated_topics:
-        return {
-            "error": "No topics available"
-        }
+    interests = load_interests()
 
-    topic = deduplicated_topics[0]
+    ranked_topics = rank_interest(
+        deduplicated_topics,
+        interests
+    )
 
-    prompt = build_prompt(topic)
+    selected_topic = ranked_topics[0]
+
+    prompt = build_prompt(selected_topic)
 
     return {
-        "topic": topic.title,
+        "interests": interests,
+        "selected_topic": selected_topic.title,
         "prompt": prompt
-    } 
+    }
