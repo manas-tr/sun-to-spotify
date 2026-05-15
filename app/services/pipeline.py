@@ -52,9 +52,12 @@ async def run_pipeline():
 
         prompts.append({
             "topic": topic.title,
-            "prompt": prompt,
-            "sun_job": sun_job,
-            "sun_result": sun_result
+            "audio_status": sun_result["status"],
+            "audio_url": sun_result["audio_url"],
+            "summary": (
+                f"A personalized SUN brief about "
+                f"{topic.title}"
+            )
         })
 
     saved_file = daily_brief(prompts)
@@ -67,5 +70,5 @@ async def run_pipeline():
         "interests": interests,
         "total_topics": len(top_topics),
         "saved_file": saved_file,
-        "daily_brief": prompts
+        "sunrise_brief": prompts
     }
