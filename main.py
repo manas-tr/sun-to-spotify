@@ -11,6 +11,8 @@ from app.ml.ranker import (
     rank_interest
 )
 
+from app.core.logger import logger
+
 app = FastAPI(
     title="SUN-flower",
     description="Your daily SUN-rise, delivered before your commute.",
@@ -39,6 +41,9 @@ async def get_topics():
 
 @app.get("/prompt")
 async def generate_prompt():
+
+    logger.info("Starting personalized brief generation")
+
     topics = await fetch_topics()
 
     deduplicated_topics = deduplicate_topics(topics)
@@ -59,6 +64,10 @@ async def generate_prompt():
             "topic": topic.title,
             "prompt": build_prompt(topic)
         })
+
+    logger.info(
+        f"Generated {len(prompts)} personalized prompts"
+    )
 
     return {
         "interests": interests,
