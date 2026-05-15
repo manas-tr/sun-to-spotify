@@ -50,12 +50,18 @@ async def generate_prompt():
         interests
     )
 
-    selected_topic = ranked_topics[0]
+    top_topics = ranked_topics[:3]
 
-    prompt = build_prompt(selected_topic)
+    prompts = []
+
+    for topic in top_topics:
+        prompts.append({
+            "topic": topic.title,
+            "prompt": build_prompt(topic)
+        })
 
     return {
         "interests": interests,
-        "selected_topic": selected_topic.title,
-        "prompt": prompt
+        "total_topics": len(top_topics),
+        "daily_brief": prompts
     }
