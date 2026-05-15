@@ -15,6 +15,8 @@ from app.core.logger import logger
 
 from app.services.sun_client import SunClient
 
+from app.utils.storage import daily_brief
+
 app = FastAPI(
     title="SUN-flower",
     description="Your daily SUN-rise, delivered before your commute.",
@@ -86,8 +88,15 @@ async def generate_prompt():
         f"Generated {len(prompts)} personalized prompts"
     )
 
+    saved_file = daily_brief(prompts)
+
+    logger.info(
+        f"Saved daily brief to {saved_file}"
+    )
+
     return {
         "interests": interests,
         "total_topics": len(top_topics),
+        "saved_file": saved_file,
         "daily_brief": prompts
     }
