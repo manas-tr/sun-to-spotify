@@ -12,6 +12,8 @@ from app.services.sun_client import SunClient
 from app.utils.helper import load_interests
 from app.utils.storage import daily_brief
 
+from app.services.spotify_client import SpotifyClient
+
 
 async def run_pipeline():
 
@@ -38,6 +40,8 @@ async def run_pipeline():
 
     prompts = []
 
+    spotify_client = SpotifyClient()
+
     for topic in top_topics:
 
         prompt = build_prompt(topic)
@@ -50,12 +54,19 @@ async def run_pipeline():
             sun_job["job_id"]
         )
 
+        spotify_result = await spotify_client.upload_episode(
+            topic.title,
+            sun_result["audio_url"]
+        )
+
         prompts.append({
             "topic": topic.title,
             "audio_status": sun_result["status"],
             "audio_url": sun_result["audio_url"],
+            "spotify_status": spotify_result["spotify_status"],
+            "spotify_episode": spotify_result["spotify_episode"],
             "summary": (
-                f"A personalized SUN brief about "
+                f"A SUN brief about "
                 f"{topic.title}"
             )
         })
