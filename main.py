@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.ml.ranker import deduplicate_topics
 
 from app.services.fetcher import fetch_topics
 
@@ -20,7 +21,10 @@ async def root():
 async def get_topics():
     topics = await fetch_topics()
 
+    deduplicated_topics = deduplicate_topics(topics)
+
     return {
-        "count": len(topics),
-        "topics": topics
+        "original_count": len(topics),
+        "final_count": len(deduplicated_topics),
+        "topics": deduplicated_topics
     }
