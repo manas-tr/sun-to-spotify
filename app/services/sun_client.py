@@ -1,3 +1,5 @@
+import uuid
+
 from app.core.logger import logger
 
 
@@ -13,6 +15,8 @@ class SunClient:
         )
 
         return {
-            "status": "pending",
-            "message": "SUN generation on the way!🌻"
+            "job_id": str(uuid.uuid4()),
+            "status": "queued",
+            "audio_duration": "5 minutes",
+            "message": "SUN audio generated! 🌻"
         }
