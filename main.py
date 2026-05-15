@@ -13,6 +13,8 @@ from app.ml.ranker import (
 
 from app.core.logger import logger
 
+from app.services.sun_client import SunClient
+
 app = FastAPI(
     title="SUN-flower",
     description="Your daily SUN-rise, delivered before your commute.",
@@ -59,10 +61,18 @@ async def generate_prompt():
 
     prompts = []
 
+    sun_client=SunClient()
+
     for topic in top_topics:
+
+        prompt = build_prompt(topic)
+
+        sun_response = await sun_client.generate_audio_course(prompt)
+
         prompts.append({
             "topic": topic.title,
-            "prompt": build_prompt(topic)
+            "prompt": prompt,
+            "sun_status": sun_response
         })
 
     logger.info(
