@@ -67,12 +67,19 @@ async def generate_prompt():
 
         prompt = build_prompt(topic)
 
-        sun_response = await sun_client.generate_audio_course(prompt)
+        sun_job = await sun_client.generate_audio_course(
+            prompt
+        )
+
+        sun_result = await sun_client.poll_generation_status(
+            sun_job["job_id"]
+        )
 
         prompts.append({
             "topic": topic.title,
             "prompt": prompt,
-            "sun_status": sun_response
+            "sun_job": sun_job,
+            "sun_result": sun_result
         })
 
     logger.info(
